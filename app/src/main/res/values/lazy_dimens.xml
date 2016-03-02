@@ -1,0 +1,15 @@
+<resources>
+    <!-- Main -->
+    <dimen name="lazy_general_content_padding">8dip</dimen>
+	<dimen name="lazy_hair_line">1px</dimen>
+    <!-- Text -->
+    <dimen name="lazy_title_text_extra_large">26dip</dimen>
+    <dimen name="lazy_title_text_primary">22dip</dimen>
+    <dimen name="lazy_content_text_primary">18dip</dimen>
+    <dimen name="lazy_content_text_secondary">15dip</dimen>
+    <dimen name="lazy_content_text_minor">12dip</dimen>
+    <!-- List Item -->
+    <dimen name="lazy_list_item_height">70dip</dimen>
+    <dimen name="lazy_list_item_padding">@dimen/lazy_general_content_padding</dimen>
+	<dimen name="lazy_list_divider_padding">@dimen/lazy_general_content_padding</dimen>
+</resources>

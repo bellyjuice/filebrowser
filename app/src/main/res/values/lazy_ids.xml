@@ -1,0 +1,5 @@
+<resources>
+
+    <item name="download_notification_id" type="id"/>
+
+</resources>

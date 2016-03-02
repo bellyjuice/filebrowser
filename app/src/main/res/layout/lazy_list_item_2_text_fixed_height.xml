@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/lazy_list_item_height"
+    android:orientation="vertical"
+    android:padding="@dimen/lazy_list_item_padding" >
+
+    <TextView
+        android:id="@+id/list_item_primary_text"
+        style="@style/lazy_primary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/list_item_secondary_text"
+        style="@style/lazy_secondary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2" />
+
+</LinearLayout>

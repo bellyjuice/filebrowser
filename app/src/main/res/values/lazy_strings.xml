@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="common_list">Common List</string>
+    <string name="empty_list">Empty</string>
+	<string name="x_items">%1$d subItem(s)</string>
+</resources>

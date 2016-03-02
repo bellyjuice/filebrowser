@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="lazy_main_theme_primary">#FF4010FF</color>
+    <color name="lazy_main_theme_primary_dark">#FF2020C0</color>
+    <color name="lazy_main_theme_accent">#FF600080</color>
+    <color name="lazy_main_theme_secondary">#FF8080FF</color>
+    <color name="lazy_main_theme_minor">#FFC0C0FF</color>
+    <color name="lazy_title_text_primary">#FFFFFFFF</color>
+    <color name="lazy_content_text_primary">#FF000000</color>
+    <color name="lazy_content_text_secondary">#FF888888</color>
+    <color name="lazy_content_text_minor">#FFCCCCCC</color>
+    <color name="lazy_divider">#FFDDDDDD</color>
+    <color name="lazy_list_item_pressed">@color/lazy_divider</color>
+    <color name="lazy_transparent">#00000000</color>
+
+</resources>

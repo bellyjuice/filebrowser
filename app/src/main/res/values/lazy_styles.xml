@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="lazy_primary_text">
+        <item name="android:textSize">@dimen/lazy_content_text_primary</item>
+        <item name="android:textColor">@color/lazy_content_text_primary</item>
+    </style>
+
+    <style name="lazy_secondary_text">
+        <item name="android:textSize">@dimen/lazy_content_text_secondary</item>
+        <item name="android:textColor">@color/lazy_content_text_secondary</item>
+    </style>
+
+    <style name="lazy_list_view_basic">
+        <item name="android:cacheColorHint">@color/lazy_transparent</item>
+        <item name="android:listSelector">@drawable/lazy_selector_transparent_to_minor</item>
+        <item name="android:dividerHeight">@dimen/lazy_hair_line</item>
+        <item name="android:divider">@drawable/lazy_list_divider_inset</item>
+    </style>
+    
+    <style name="lazy_empty_view_text">
+        <item name="android:textSize">@dimen/lazy_title_text_extra_large</item>
+        <item name="android:textColor">@color/lazy_content_text_secondary</item>
+        <item name="android:padding">32dip</item>
+        <item name="android:drawablePadding">16dip</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>
