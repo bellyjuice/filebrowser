@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.lazyframework.standalone.filebrowser.ui.ExtendedListView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lazyframework.standalone.filebrowser.demo.ExtendedListView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/lazy_list_view_basic"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

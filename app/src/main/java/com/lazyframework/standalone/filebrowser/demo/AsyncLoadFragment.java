@@ -1,4 +1,4 @@
-package com.lazyframework.standalone.filebrowser.ui;
+package com.lazyframework.standalone.filebrowser.demo;
 
 import android.content.Context;
 import android.os.Bundle;

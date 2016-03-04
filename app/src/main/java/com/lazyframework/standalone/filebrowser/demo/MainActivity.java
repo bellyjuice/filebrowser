@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.lazyframework.standalone.filebrowser.R;
-import com.lazyframework.standalone.filebrowser.ui.BaseFragment;
-import com.lazyframework.standalone.filebrowser.ui.FileBrowseFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;

@@ -1,4 +1,4 @@
-package com.lazyframework.standalone.filebrowser.ui;
+package com.lazyframework.standalone.filebrowser.demo;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

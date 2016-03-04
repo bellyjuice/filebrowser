@@ -1,4 +1,4 @@
-package com.lazyframework.standalone.filebrowser.ui;
+package com.lazyframework.standalone.filebrowser.demo;
 
 import java.util.List;
 
