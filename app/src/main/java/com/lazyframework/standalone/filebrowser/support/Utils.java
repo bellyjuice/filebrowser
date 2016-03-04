@@ -4,43 +4,11 @@ import java.io.File;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 public class Utils {
-	public enum NETWORK_STATE {
-		OFFLINE, MOBILE, WIFI,
-	}
-
-    @SuppressWarnings("deprecation,unused")
-	public static NETWORK_STATE getNetworkState(Context context) {
-		if (context == null) {
-			return NETWORK_STATE.OFFLINE;
-		}
-		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (cm == null) {
-			return NETWORK_STATE.OFFLINE;
-		}
-		NetworkInfo network = cm.getActiveNetworkInfo();
-		if (network == null || !network.isAvailable()) {
-			return NETWORK_STATE.OFFLINE;
-		}
-		NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		boolean mobileOK = (mobile != null && mobile.isConnected());
-		boolean wifiOK = (wifi != null && wifi.isConnected());
-		if (!mobileOK && !wifiOK) {
-			return NETWORK_STATE.OFFLINE;
-		}
-		if (mobileOK) {
-			return NETWORK_STATE.MOBILE;
-		} else {
-			return NETWORK_STATE.WIFI;
-		}
-	}
 
 	public static String formatFileSize(long number) {
 		float result = number;

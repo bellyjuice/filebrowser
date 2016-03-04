@@ -12,6 +12,7 @@ import java.util.Map;
 
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.lazyframework.standalone.filebrowser.support.Utils;
 
@@ -91,11 +92,11 @@ public class FileBrowserRunnable extends UISafeRunnable {
         }
     }
 
-    private static class BrowseData {
+    private static class BrowseCmd {
         String path;
         int level;
 
-        private BrowseData(String path, int level) {
+        private BrowseCmd(String path, int level) {
             this.path = path;
             this.level = level;
         }
@@ -111,7 +112,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
 
         private OnBrowseListener listener;
         private boolean loadFileCountInFolder;
-        private List<BrowseData> browseFolderList = new ArrayList<>();
+        private List<BrowseCmd> browseCmdList = new ArrayList<>();
         private boolean excludeFolder;
         private boolean excludeFile;
         private Map<String, Boolean> suffixFilterMap;
@@ -144,14 +145,14 @@ public class FileBrowserRunnable extends UISafeRunnable {
 
         public FileBrowseParamBuilder addBrowseFolder(String folderPath, int browseLevel) {
             if (!TextUtils.isEmpty(folderPath) && browseLevel >= 0) {
-                for (BrowseData bd : param.browseFolderList) {
+                for (BrowseCmd bd : param.browseCmdList) {
                     if (folderPath.equals(bd.path)) {
                         bd.level = bd.level > browseLevel ? bd.level : browseLevel;
                         // found and return
                         return this;
                     }
                 }
-                param.browseFolderList.add(new BrowseData(folderPath, browseLevel));
+                param.browseCmdList.add(new BrowseCmd(folderPath, browseLevel));
             }
             return this;
         }
@@ -240,31 +241,31 @@ public class FileBrowserRunnable extends UISafeRunnable {
         if (isCancelled()) {
             return;
         }
-        BrowseData data;
-        while ((data = getNextBrowseData()) != null) {
+        BrowseCmd data;
+        while ((data = getNextBrowseCmd()) != null) {
             loadFiles(data.path, data.level);
         }
     }
 
-    private BrowseData getNextBrowseData() {
-        if (hasNextBrowseData()) {
-            return param.browseFolderList.remove(param.browseFolderList.size() - 1);
+    private BrowseCmd getNextBrowseCmd() {
+        if (hasNextBrowseCmd()) {
+            return param.browseCmdList.remove(param.browseCmdList.size() - 1);
         }
         return null;
     }
 
-    private boolean hasNextBrowseData() {
-        return param.browseFolderList.size() > 0;
+    private boolean hasNextBrowseCmd() {
+        return param.browseCmdList.size() > 0;
     }
 
-    private void pushNextLevelBrowseData(List<File> files, int level) {
+    private void pushNextLevelBrowseCmd(List<File> files, int level) {
         for (int i = files.size() - 1; i >= 0; i--) {
             File f = files.get(i);
             if (!f.isDirectory()) {
                 continue;
             }
-            BrowseData bd = new BrowseData(f.getPath(), level);
-            param.browseFolderList.add(bd);
+            BrowseCmd bd = new BrowseCmd(f.getPath(), level);
+            param.browseCmdList.add(bd);
         }
     }
 
@@ -289,19 +290,12 @@ public class FileBrowserRunnable extends UISafeRunnable {
             if (!isInFilter(f)) {
                 continue;
             }
-            FileData fd = new FileData();
-            fd.filePath = f.getPath();
-            fd.name = f.getName();
-            fd.isDirectory = f.isDirectory();
-            if (!fd.isDirectory) {
-                fd.fileLength = f.length();
-            } else {
-                if (param.loadFileCountInFolder) {
-                    if (matchedFolders == null) {
-                        matchedFolders = new ArrayList<>();
-                    }
-                    matchedFolders.add(f);
+            FileData fd = getFileData(f);
+            if (param.loadFileCountInFolder && fd.isDirectory) {
+                if (matchedFolders == null) {
+                    matchedFolders = new ArrayList<>();
                 }
+                matchedFolders.add(f);
             }
             fileDataList.add(fd);
         }
@@ -309,9 +303,9 @@ public class FileBrowserRunnable extends UISafeRunnable {
             return;
         }
         if (level > 0) {
-            pushNextLevelBrowseData(fl, level - 1);
+            pushNextLevelBrowseCmd(fl, level - 1);
         }
-        if (hasNextBrowseData()) {
+        if (hasNextBrowseCmd()) {
             if (fileDataList.size() > 0) {
                 sendMessageToUI(WHAT_FILE_DATA_LOADED, new FileDataList(fileDataList));
             }
@@ -319,6 +313,17 @@ public class FileBrowserRunnable extends UISafeRunnable {
             sendMessageToUI(WHAT_FILE_DATA_LOADED, new FileDataList(fileDataList));
         }
         loadFileCountInFolder(matchedFolders);
+    }
+
+    private FileData getFileData(File f) {
+        FileData fd = new FileData();
+        fd.filePath = f.getPath();
+        fd.name = f.getName();
+        fd.isDirectory = f.isDirectory();
+        if (!fd.isDirectory) {
+            fd.fileLength = f.length();
+        }
+        return fd;
     }
 
     private boolean isInFilter(File file) {
