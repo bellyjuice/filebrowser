@@ -13,7 +13,7 @@ import android.widget.ListView;
 import com.lazyframework.standalone.filebrowser.FileBrowserRunnable;
 import com.lazyframework.standalone.filebrowser.R;
 import com.lazyframework.standalone.filebrowser.UISafeExecutor;
-import com.lazyframework.standalone.filebrowser.support.Utils;
+import com.lazyframework.standalone.filebrowser.support.FileBrowserUtils;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -79,7 +79,7 @@ public class FileBrowseFragment extends BaseListFragment {
         }
         mPositionOnce = true;
         FileBrowserRunnable.FileBrowseParamBuilder builder = new FileBrowserRunnable.FileBrowseParamBuilder();
-        builder.addBrowseFolder(path, 4).setExcludeFolder(true).setOnBrowseListener(new FileBrowserRunnable.OnBrowseListener() {
+        builder.addBrowseFolder(path, 4).setOnBrowseListener(new FileBrowserRunnable.OnBrowseListener() {
 
             @Override
             public void onFileDataLoaded(List<FileBrowserRunnable.FileData> list) {
@@ -119,7 +119,7 @@ public class FileBrowseFragment extends BaseListFragment {
                     ab.setTitle(shorterFolder);
                 }
             }
-        }).addMimeTypeFilter("image/");
+        }).addMimeTypeFilter("audio/").excludeFolder(Environment.getExternalStorageDirectory() + "/Camera");
         mCurrentTask = runTask(new FileBrowserRunnable(builder));
     }
 
@@ -133,7 +133,7 @@ public class FileBrowseFragment extends BaseListFragment {
                 mCurrentPath = data.filePath;
                 browseTo(mCurrentPath);
             } else {
-                Utils.openFileExternal(getActivity(), data.filePath);
+                FileBrowserUtils.openFileExternal(getActivity(), data.filePath);
             }
         }
     }

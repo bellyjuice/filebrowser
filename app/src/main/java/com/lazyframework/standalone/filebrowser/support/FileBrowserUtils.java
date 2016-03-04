@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-public class Utils {
+public class FileBrowserUtils {
 
 	public static String formatFileSize(long number) {
 		float result = number;

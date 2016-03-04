@@ -12,9 +12,8 @@ import java.util.Map;
 
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.lazyframework.standalone.filebrowser.support.Utils;
+import com.lazyframework.standalone.filebrowser.support.FileBrowserUtils;
 
 /**
  * A runnable to browse file, use it in a thread or thread pool
@@ -103,7 +102,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
     }
 
     private final static int MAX_EXTRA_FILE_DATA_TO_LOAD_IN_A_TURN = 5;
-    FileBrowseParam param;
+    private FileBrowseParam param;
 
     private static class FileBrowseParam {
         private FileBrowseParam() {
@@ -113,14 +112,15 @@ public class FileBrowserRunnable extends UISafeRunnable {
         private OnBrowseListener listener;
         private boolean loadFileCountInFolder;
         private List<BrowseCmd> browseCmdList = new ArrayList<>();
-        private boolean excludeFolder;
-        private boolean excludeFile;
-        private Map<String, Boolean> suffixFilterMap;
+        private boolean showFolder = true;
+        private boolean showFile = true;
+        private Map<String, Object> suffixFilterMap;
         private List<String> mimeTypeFilterList;
         private List<String> filenameFilterList;
         private boolean filterByFileLength;
         private long minFileLength;
         private long maxFileLength = Long.MAX_VALUE;
+        private Map<String, Object> excludeFolderMap;
     }
 
     public static class FileBrowseParamBuilder {
@@ -163,7 +163,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
                 if (param.suffixFilterMap == null) {
                     param.suffixFilterMap = new HashMap<>();
                 }
-                param.suffixFilterMap.put(suffix, true);
+                param.suffixFilterMap.put(suffix, new Object());
             }
             return this;
         }
@@ -191,14 +191,14 @@ public class FileBrowserRunnable extends UISafeRunnable {
         }
 
         @SuppressWarnings({"unused"})
-        public FileBrowseParamBuilder setExcludeFolder(boolean set) {
-            param.excludeFolder = set;
+        public FileBrowseParamBuilder setShowFolder(boolean set) {
+            param.showFolder = set;
             return this;
         }
 
         @SuppressWarnings({"unused"})
-        public FileBrowseParamBuilder setExcludeFile(boolean set) {
-            param.excludeFile = set;
+        public FileBrowseParamBuilder setShowFile(boolean set) {
+            param.showFile = set;
             return this;
         }
 
@@ -226,7 +226,23 @@ public class FileBrowserRunnable extends UISafeRunnable {
             return this;
         }
 
+        public FileBrowseParamBuilder excludeFolder(String folder) {
+            if (!TextUtils.isEmpty(folder)) {
+                if (param.excludeFolderMap == null) {
+                    param.excludeFolderMap = new HashMap<>();
+                }
+                param.excludeFolderMap.put(folder, new Object());
+            }
+            return this;
+        }
+
         public FileBrowseParam create() {
+            if (param.showFolder) {
+                // showFolder is not compatible with the filters below
+                if (param.filterByFileLength || param.mimeTypeFilterList != null || param.suffixFilterMap != null) {
+                    param.showFolder = false;
+                }
+            }
             return param;
         }
     }
@@ -270,6 +286,12 @@ public class FileBrowserRunnable extends UISafeRunnable {
     }
 
     private void loadFiles(String folderPath, int level) {
+        if (isFolderExcluded(folderPath)) {
+            if (!hasNextBrowseCmd()) {
+                sendMessageToUI(WHAT_FILE_DATA_LOADED, new FileDataList(new ArrayList<FileData>()));
+            }
+            return;
+        }
         File folder = new File(folderPath);
         File[] fa = null;
         if (folder.exists() && folder.isDirectory() && folder.canRead()) {
@@ -326,10 +348,14 @@ public class FileBrowserRunnable extends UISafeRunnable {
         return fd;
     }
 
+    private boolean isFolderExcluded(String folder) {
+        return param.excludeFolderMap != null && (param.excludeFolderMap.get(folder) != null);
+    }
+
     private boolean isInFilter(File file) {
         boolean isDirectory = file.isDirectory();
         String filename = file.getName();
-        if (isDirectory && !param.excludeFolder) {
+        if (isDirectory && param.showFolder) {
             boolean filenameMatch = true;
             if (param.filenameFilterList != null) {
                 filenameMatch = false;
@@ -344,7 +370,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
             if (filenameMatch) {
                 return true;
             }
-        } else if (!isDirectory && !param.excludeFile) {
+        } else if (!isDirectory && param.showFile) {
             boolean lengthMatch = false;
             if (param.filterByFileLength) {
                 long length = file.length();
@@ -357,7 +383,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
             boolean suffixMatch = true;
             if (param.suffixFilterMap != null) {
                 suffixMatch = false;
-                String suffix = Utils.getSuffix(filename);
+                String suffix = FileBrowserUtils.getSuffix(filename);
                 if (param.suffixFilterMap.get(suffix) != null) {
                     suffixMatch = true;
                 }
@@ -365,7 +391,7 @@ public class FileBrowserRunnable extends UISafeRunnable {
             boolean mimeTypeMatch = true;
             if (param.mimeTypeFilterList != null) {
                 mimeTypeMatch = false;
-                String mimeType = Utils.getMimeType(filename);
+                String mimeType = FileBrowserUtils.getMimeType(filename);
                 if (!TextUtils.isEmpty(mimeType)) {
                     for (String mimeTypePrefix : param.mimeTypeFilterList) {
                         if (mimeType.startsWith(mimeTypePrefix)) {

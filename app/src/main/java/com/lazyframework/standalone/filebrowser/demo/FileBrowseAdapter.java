@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 
 import com.lazyframework.standalone.filebrowser.FileBrowserRunnable.FileData;
 import com.lazyframework.standalone.filebrowser.R;
-import com.lazyframework.standalone.filebrowser.support.Utils;
+import com.lazyframework.standalone.filebrowser.support.FileBrowserUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -87,7 +87,7 @@ public class FileBrowseAdapter extends BaseAdapter {
         if (objHolder instanceof ViewHolder && objItem instanceof FileData) {
             ViewHolder holder = (ViewHolder) objHolder;
             FileData item = (FileData) objItem;
-            String mimeType = Utils.getMimeType(item.filePath);
+            String mimeType = FileBrowserUtils.getMimeType(item.filePath);
             if (holder.primaryImage != null) {
                 if (!TextUtils.isEmpty(mimeType)
                         && (mimeType.startsWith("video/") || mimeType.startsWith("image/"))) {
@@ -115,7 +115,7 @@ public class FileBrowseAdapter extends BaseAdapter {
                         holder.secondaryText.setVisibility(View.INVISIBLE);
                     }
                 } else {
-                    String size = Utils.formatFileSize(item.fileLength);
+                    String size = FileBrowserUtils.formatFileSize(item.fileLength);
                     holder.secondaryText.setText(size);
                 }
             }
